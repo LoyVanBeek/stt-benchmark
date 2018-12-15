@@ -77,20 +77,27 @@ def _run():
     for engine_type in ASREngines:
         logging.info('evaluating %s' % engine_type.value)
 
-        futures = []
-        with ProcessPoolExecutor(num_workers) as pool:
-            for i in range(num_workers):
-                data_chunk = [dataset.get(j) for j in range(i * chunk_size, (i + 1) * chunk_size)]
-                future = pool.submit(
-                    _process_chunk,
-                    engine_type,
-                    engines_params[engine_type],
-                    data_chunk)
-                futures.append(future)
+        # futures = []
+        # with ProcessPoolExecutor(num_workers) as pool:
+        #     for i in range(num_workers):
+        #         data_chunk = [dataset.get(j) for j in range(i * chunk_size, (i + 1) * chunk_size)]
+        #         future = pool.submit(
+        #             _process_chunk,
+        #             engine_type,
+        #             engines_params[engine_type],
+        #             data_chunk)
+        #         futures.append(future)
+        #
+        # word_error_info = [x.result() for x in futures]
+        # word_error_count = sum([x[0] for x in word_error_info])
+        # word_count = sum([x[1] for x in word_error_info])
 
-        word_error_info = [x.result() for x in futures]
-        word_error_count = sum([x[0] for x in word_error_info])
-        word_count = sum([x[1] for x in word_error_info])
+        results = []
+        data_chunk = dataset.all_data() #[dataset.get(j) for j in range(i * chunk_size, (i + 1) * chunk_size)]
+        results += [_process_chunk(engine_type, engines_params[engine_type], data_chunk)]
+
+        word_error_count = sum([x[0] for x in results])
+        word_count = sum([x[1] for x in results])
 
         logging.info('WER = %f' % (float(word_error_count) / word_count))
 

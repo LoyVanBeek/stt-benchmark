@@ -52,6 +52,9 @@ class Dataset(object):
         else:
             raise ValueError("cannot create %s of type '%s'" % (cls.__name__, dataset_type))
 
+    def all_data(self):
+        raise NotImplementedError()
+
 
 class CommonVoiceDataset(Dataset):
     """https://voice.mozilla.org/en"""
