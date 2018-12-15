@@ -66,6 +66,7 @@ class CommonVoiceDataset(Dataset):
         :param root: root of dataset.
         """
 
+        super(CommonVoiceDataset, self).__init__()
         self._data = []
 
         metadata_path = os.path.join(root, 'cv-valid-test.csv')
@@ -102,6 +103,7 @@ class CommonVoiceDataset(Dataset):
 
 class LibriSpeechDataset(Dataset):
     def __init__(self, root):
+        super(LibriSpeechDataset, self).__init__()
         self._data = list()
 
         for speaker_id in os.listdir(root):
