@@ -67,7 +67,7 @@ def _run():
         trie_path=os.path.expanduser(args.deep_speech_trie_path))
 
     dataset = Dataset.create(args.dataset_type, os.path.expanduser(args.dataset_root))
-    logging.info('loaded %s with %f hours of data' % (str(dataset), dataset.size_hours()))
+    logging.info('loaded %s with %f seconds of data' % (str(dataset), dataset.size_seconds()))
 
     # NOTE: Depending on how much RAM you have you might need to reduce this when benchmarking DeepSpeech as it consumes
     # lots of RAM (specially when decoding with language model is enabled).

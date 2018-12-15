@@ -15,8 +15,11 @@ class Dataset(object):
 
     def size_hours(self):
         """Total size of dataset in terms of hours of speech data."""
-
         return sum([soundfile.read(self.get(i)[0])[0].size / (16000 * 3600) for i in range(self.size())])
+
+    def size_seconds(self):
+        """Total size of dataset in terms of seconds of speech data."""
+        return sum([soundfile.read(self.get(i)[0])[0].size / 16000 for i in range(self.size())])
 
     def get(self, index):
         """
