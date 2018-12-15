@@ -44,6 +44,8 @@ class Dataset(object):
             return CommonVoiceDataset(root)
         if dataset_type == 'librispeech':
             return LibriSpeechDataset(root)
+        if dataset_type == 'custom':
+            return CustomDataset(root)
         else:
             raise ValueError("cannot create %s of type '%s'" % (cls.__name__, dataset_type))
 
@@ -125,3 +127,41 @@ class LibriSpeechDataset(Dataset):
 
     def __str__(self):
         return 'LibriSpeech Dataset'
+
+
+class CustomDataset(Dataset):
+    def __init__(self, root):
+        super(CustomDataset, self).__init__()
+
+        self._data = list()
+
+        with open(os.path.join(root, "annotations.csv")) as f:
+            reader = csv.DictReader(f)
+            for d in reader:
+                if d['text'] and d['language'] == "EN":
+                    row = (os.path.join(root, d['file']),
+                       d['text'])
+
+                    orig_path = os.path.join(root, "original", d['file'])
+                    wav_path = os.path.join(root, d['file'])
+                    if not os.path.exists(wav_path):
+                        transformer = sox.Transformer()
+                        transformer.convert(samplerate=16000, bitdepth=16, n_channels=1)
+                        transformer.build(orig_path, wav_path)
+
+                    self._data.append((wav_path, d['text']))
+
+                    self._data += [row]
+
+
+    def size(self):
+        return len(self._data)
+
+    def get(self, index):
+        return self._data[index]
+
+    def __str__(self):
+        return 'Custom Dataset'
+
+    def all_data(self):
+        return self._data
